@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+
+[dev-packages]
+flake8 = "*"
+autopep8 = "*"
+pre-commit = "*"
+ipython = "*"
+flake8-annotations = "*"
+flake8-bugbear = "*"
+flake8-import-order = "*"
+
+[scripts]
+precommit = "pre-commit install"
+lint = "pre-commit run --all-files"
