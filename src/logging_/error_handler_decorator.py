@@ -1,7 +1,6 @@
 import functools
-import typing as t
-
 import logging
+import typing as t
 
 logger = logging.getLogger(__name__)
 

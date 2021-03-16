@@ -1,7 +1,7 @@
 import asyncio
 
 
-async def test():
+async def test() -> str:
     return "Hello"
 
 # Running the async function as sync

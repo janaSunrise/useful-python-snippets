@@ -1,11 +1,12 @@
 import asyncio
 import time
-from functools import wraps, partial
+import typing as t
+from functools import partial, wraps
 
 
-def async_wrap(func):
+def async_wrap(func: t.Callable) -> None:
     @wraps(func)
-    async def run(*args, loop=None, executor=None, **kwargs):
+    async def run(*args, loop: t.Any = None, executor: t.Any = None, **kwargs) -> t.Any:
         if loop is None:
             loop = asyncio.get_event_loop()
 
@@ -15,12 +16,11 @@ def async_wrap(func):
 
 
 # -- USAGE --
-
 # Normal conversion to async
 async_sleep = async_wrap(time.sleep)
 
 
 # Decorator usage
 @async_wrap
-def my_async_sleep(duration):
+def my_async_sleep(duration: int) -> None:
     time.sleep(duration)
