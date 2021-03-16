@@ -17,7 +17,7 @@ def attack(host: str, port: int = 80, request_count: int = 10 ** 10) -> None:
         thread_num_mutex.acquire(True)
 
         thread_num += 1
-        print("\n " + time.ctime().split(" ")[3] + " " + "[" + str(thread_num) + "] #-#-# Hold Your Tears #-#-#")
+        print(f"\n[{time.ctime().split(' ')[3]}] [{str(thread_num)}] Under progress...")
 
         thread_num_mutex.release()
 
