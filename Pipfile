@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 sqlalchemy = {git = "https://github.com/sqlalchemy/sqlalchemy"}
+scapy = "*"
 
 [dev-packages]
 flake8 = "*"

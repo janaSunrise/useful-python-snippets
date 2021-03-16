@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "d475fba3a2d9d749e8b9e81b2af1e263192e2c4411c3ac1a1ce73237ccceb398"
+            "sha256": "12658a1f8293f79ea131768aee53d815cbb53bc7d416e82cf7500545909f0723"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -60,12 +60,19 @@
                 "sha256:f8450d5ef759dbe59f84f2c9f77491bb3d3c44bc1a573746daf086e70b14c243",
                 "sha256:f97d83049715fd9dec7911860ecf0e17b48d8725de01e45de07d8ac0bd5bc378"
             ],
-            "markers": "python_version >= '3'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'",
             "version": "==1.0.0"
+        },
+        "scapy": {
+            "hashes": [
+                "sha256:ecfd7a14cd9c3ef0eb08d28d5bb71d97219edff1454ccbdff229f676b27900ee"
+            ],
+            "index": "pypi",
+            "version": "==2.4.4"
         },
         "sqlalchemy": {
             "git": "https://github.com/sqlalchemy/sqlalchemy",
-            "ref": "16b13ba06b661a6dfb13b1537ee873c9065b084e"
+            "ref": "1c5ec1e60999516c016e0fab60979f63060d0a0d"
         }
     },
     "develop": {
