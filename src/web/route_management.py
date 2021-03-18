@@ -1,22 +1,13 @@
 import asyncio
 import typing as t
-from urllib.parse import quote as _uriquote
 
 import aiohttp
 import requests
 
 
 class Route:
-    def __init__(self, method: str, base_url: str, path: str, **parameters) -> None:
-        self.path = path
-        self.method = method
-
-        url = base_url + self.path
-
-        if parameters:
-            self.url = url.format(**{k: _uriquote(v) if isinstance(v, str) else v for k, v in parameters.items()})
-        else:
-            self.url = url
+    def __init__(self, base_url: str) -> None:
+        self.base_url = base_url
 
         self.__session = aiohttp.ClientSession()
         self.__lock = asyncio.Lock()
@@ -35,23 +26,23 @@ class Route:
     async def close(self) -> None:
         await self.__session.close()
 
-    def _fetch(self, data: dict = None) -> t.Tuple[dict, bool]:
+    def _fetch(self, method: str, path: str, data: dict = None, **kwargs) -> t.Tuple[dict, bool]:
         if not data:
             data = {}
 
-        url = self.form_url(self.url, data)
+        url = self.form_url(self.base_url + path, data)
 
-        with requests.get(url) as response:
+        with requests.request(method, url, **kwargs) as response:
             json = response.json()
             return json
 
-    async def _async_fetch(self, data: dict = None) -> t.Tuple[dict, bool]:
+    async def _async_fetch(self, method: str, path: str, data: dict = None, **kwargs) -> t.Tuple[dict, bool]:
         if not data:
             data = {}
 
-        url = self.form_url(self.url, data)
+        url = self.form_url(self.base_url + path, data)
 
         async with self.__lock:
-            async with self.__session.get(url) as response:
+            async with self.__session.request(method, url, **kwargs) as response:
                 json = await response.json()
                 return json
