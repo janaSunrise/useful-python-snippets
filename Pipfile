@@ -8,6 +8,7 @@ sqlalchemy = {git = "https://github.com/sqlalchemy/sqlalchemy"}
 scapy = "*"
 requests = "*"
 aiohttp = "*"
+outcome = "*"
 
 [dev-packages]
 flake8 = "*"
