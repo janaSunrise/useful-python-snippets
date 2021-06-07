@@ -16,10 +16,6 @@ A collection of awesome code snippets that integrates and helps you save time.
 <a href="https://github.com/janaSunrise/useful-python-snippets">
     <img src="https://img.shields.io/github/languages/code-size/janaSunrise/useful-python-snippets" alt="Code Size" />
 </a>
-
-<a href="https://discord.gg/cSC5ZZwYGQ">
-    <img src="https://discordapp.com/api/guilds/695008516590534758/widget.png?style=shield" alt="Discord" />
-</a>
 </p>
 
 ## 🤝 Contributing
@@ -34,10 +30,7 @@ making the commit message.
 ## 💬 Get in touch
 
 If you have various suggestions, questions or want to discuss things wit our community, Have a look at
-[Github discussions](https://github.com/janaSunrise/useful-python-snippets/discussions) or join our discord server!
-
-[![Discord](https://discordapp.com/api/guilds/695008516590534758/widget.png?style=shield)](https://discord.gg/cSC5ZZwYGQ)
-
+[Github discussions](https://github.com/janaSunrise/useful-python-snippets/discussions)!
 ## Show your support
 
 We love people's support in growing and improving. Be sure to leave a ⭐️ if you like the project and 
