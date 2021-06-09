@@ -17,16 +17,18 @@ class Route:
         if not data:
             data = {}
 
-        url += "?" + "&".join([
-            f"{dict_key}={dict_value}" for dict_key, dict_value in data.items()
-        ])
+        url += "?" + "&".join(
+            [f"{dict_key}={dict_value}" for dict_key, dict_value in data.items()]
+        )
 
         return url
 
     async def close(self) -> None:
         await self.__session.close()
 
-    def _fetch(self, method: str, path: str, data: dict = None, **kwargs) -> t.Tuple[dict, bool]:
+    def _fetch(
+        self, method: str, path: str, data: dict = None, **kwargs
+    ) -> t.Tuple[dict, bool]:
         if not data:
             data = {}
 
@@ -36,7 +38,9 @@ class Route:
             json = response.json()
             return json
 
-    async def _async_fetch(self, method: str, path: str, data: dict = None, **kwargs) -> t.Tuple[dict, bool]:
+    async def _async_fetch(
+        self, method: str, path: str, data: dict = None, **kwargs
+    ) -> t.Tuple[dict, bool]:
         if not data:
             data = {}
 

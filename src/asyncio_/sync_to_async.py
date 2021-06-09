@@ -12,6 +12,7 @@ def async_wrap(func: t.Callable) -> None:
 
         pfunc = partial(func, *args, **kwargs)
         return await loop.run_in_executor(executor, pfunc)
+
     return run
 
 

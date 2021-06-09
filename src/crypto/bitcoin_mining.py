@@ -7,7 +7,9 @@ def to_sha256(text: str) -> str:
     return sha256(text.encode("ascii")).hexdigest()
 
 
-def mine(block_number: str, transactions: str, previous_hash: str, prefix_zeros: int) -> str:
+def mine(
+    block_number: str, transactions: str, previous_hash: str, prefix_zeros: int
+) -> str:
     prefix_str = "0" * prefix_zeros
 
     for nonce in range(MAX_NONCE):

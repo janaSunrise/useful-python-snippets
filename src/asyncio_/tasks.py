@@ -10,8 +10,14 @@ from src.algorithm.backoff import ExponentialBackoff
 
 class Loop:
     def __init__(
-            self, coro: t.Awaitable, seconds: int, hours: int, minutes: int, count: int, reconnect: bool,
-            loop: asyncio.Task
+        self,
+        coro: t.Awaitable,
+        seconds: int,
+        hours: int,
+        minutes: int,
+        count: int,
+        reconnect: bool,
+        loop: asyncio.Task,
     ):
         self.coro = coro
         self.reconnect = reconnect
@@ -20,7 +26,7 @@ class Loop:
         self._current_loop = 0
         self._task = None
         self._injected = None
-        self._valid_exception = (OSError)
+        self._valid_exception = OSError
 
         self._before_loop = None
         self._after_loop = None
@@ -29,7 +35,7 @@ class Loop:
         self._stop_next_iteration = False
 
         if self.count is not None and self.count <= 0:
-            raise ValueError('count must be greater than 0 or None.')
+            raise ValueError("count must be greater than 0 or None.")
 
         self.change_interval(seconds=seconds, minutes=minutes, hours=hours)
         self._last_iteration_failed = False
@@ -37,10 +43,14 @@ class Loop:
         self._next_iteration = None
 
         if not inspect.iscoroutinefunction(self.coro):
-            raise TypeError('Expected coroutine function, not {0.__name__!r}.'.format(type(self.coro)))
+            raise TypeError(
+                "Expected coroutine function, not {0.__name__!r}.".format(
+                    type(self.coro)
+                )
+            )
 
     async def _call_loop_function(self, name: str, *args, **kwargs):
-        coro = getattr(self, '_' + name)
+        coro = getattr(self, "_" + name)
         if coro is None:
             return
 
@@ -51,7 +61,7 @@ class Loop:
 
     async def _loop(self, *args, **kwargs):
         backoff = ExponentialBackoff()
-        await self._call_loop_function('before_loop')
+        await self._call_loop_function("before_loop")
         self._last_iteration_failed = False
         self._next_iteration = datetime.datetime.now(datetime.timezone.utc)
         try:
@@ -84,10 +94,10 @@ class Loop:
             raise
         except Exception as exc:
             self._has_failed = True
-            await self._call_loop_function('error', exc)
+            await self._call_loop_function("error", exc)
             raise exc
         finally:
-            await self._call_loop_function('after_loop')
+            await self._call_loop_function("after_loop")
             self._is_being_cancelled = False
             self._current_loop = 0
             self._stop_next_iteration = False
@@ -98,8 +108,13 @@ class Loop:
             return self
 
         copy = Loop(
-            self.coro, seconds=self.seconds, hours=self.hours, minutes=self.minutes,
-            count=self.count, reconnect=self.reconnect, loop=self.loop
+            self.coro,
+            seconds=self.seconds,
+            hours=self.hours,
+            minutes=self.minutes,
+            count=self.count,
+            reconnect=self.reconnect,
+            loop=self.loop,
         )
         copy._injected = obj
         copy._before_loop = self._before_loop
@@ -129,7 +144,7 @@ class Loop:
 
     def start(self, *args, **kwargs) -> asyncio.Task:
         if self._task is not None and not self._task.done():
-            raise RuntimeError('Task is already launched and is not completed.')
+            raise RuntimeError("Task is already launched and is not completed.")
 
         if self._injected is not None:
             args = (self._injected, *args)
@@ -152,7 +167,9 @@ class Loop:
             self._task.cancel()
 
     def restart(self, *args, **kwargs) -> None:
-        def restart_when_over(fut: t.Any, *, args: t.Any = args, kwargs: t.Any = kwargs) -> None:
+        def restart_when_over(
+            fut: t.Any, *, args: t.Any = args, kwargs: t.Any = kwargs
+        ) -> None:
             self._task.remove_done_callback(restart_when_over)
             self.start(*args, **kwargs)
 
@@ -163,9 +180,9 @@ class Loop:
     def add_exception_type(self, *exceptions) -> None:
         for exc in exceptions:
             if not inspect.isclass(exc):
-                raise TypeError('{0!r} must be a class.'.format(exc))
+                raise TypeError("{0!r} must be a class.".format(exc))
             if not issubclass(exc, BaseException):
-                raise TypeError('{0!r} must inherit from BaseException.'.format(exc))
+                raise TypeError("{0!r} must inherit from BaseException.".format(exc))
 
         self._valid_exception = (*self._valid_exception, *exceptions)
 
@@ -174,7 +191,9 @@ class Loop:
 
     def remove_exception_type(self, *exceptions) -> bool:
         old_length = len(self._valid_exception)
-        self._valid_exception = tuple(x for x in self._valid_exception if x not in exceptions)
+        self._valid_exception = tuple(
+            x for x in self._valid_exception if x not in exceptions
+        )
         return len(self._valid_exception) == old_length - len(exceptions)
 
     def get_task(self) -> asyncio.Task:
@@ -191,26 +210,45 @@ class Loop:
 
     async def _error(self, *args) -> None:
         exception = args[-1]
-        print('Unhandled exception in internal background task {0.__name__!r}.'.format(self.coro), file=sys.stderr)
-        traceback.print_exception(type(exception), exception, exception.__traceback__, file=sys.stderr)
+        print(
+            "Unhandled exception in internal background task {0.__name__!r}.".format(
+                self.coro
+            ),
+            file=sys.stderr,
+        )
+        traceback.print_exception(
+            type(exception), exception, exception.__traceback__, file=sys.stderr
+        )
 
     def before_loop(self, coro: t.Coroutine) -> t.Coroutine:
         if not inspect.iscoroutinefunction(coro):
-            raise TypeError('Expected coroutine function, received {0.__name__!r}.'.format(type(coro)))
+            raise TypeError(
+                "Expected coroutine function, received {0.__name__!r}.".format(
+                    type(coro)
+                )
+            )
 
         self._before_loop = coro
         return coro
 
     def after_loop(self, coro: t.Coroutine) -> t.Coroutine:
         if not inspect.iscoroutinefunction(coro):
-            raise TypeError('Expected coroutine function, received {0.__name__!r}.'.format(type(coro)))
+            raise TypeError(
+                "Expected coroutine function, received {0.__name__!r}.".format(
+                    type(coro)
+                )
+            )
 
         self._after_loop = coro
         return coro
 
     def error(self, coro: t.Coroutine) -> t.Coroutine:
         if not inspect.iscoroutinefunction(coro):
-            raise TypeError('Expected coroutine function, received {0.__name__!r}.'.format(type(coro)))
+            raise TypeError(
+                "Expected coroutine function, received {0.__name__!r}.".format(
+                    type(coro)
+                )
+            )
 
         self._error = coro
         return coro
@@ -218,10 +256,12 @@ class Loop:
     def _get_next_sleep_time(self) -> int:
         return self._last_iteration + datetime.timedelta(seconds=self._sleep)
 
-    def change_interval(self, *, seconds: int = 0, minutes: int = 0, hours: int = 0) -> None:
+    def change_interval(
+        self, *, seconds: int = 0, minutes: int = 0, hours: int = 0
+    ) -> None:
         sleep = seconds + (minutes * 60.0) + (hours * 3600.0)
         if sleep < 0:
-            raise ValueError('Total number of seconds cannot be less than zero.')
+            raise ValueError("Total number of seconds cannot be less than zero.")
 
         self._sleep = sleep
         self.seconds = seconds
@@ -247,17 +287,22 @@ async def sleep_until(when: datetime.datetime, result: t.Any = None) -> t.Any:
 
 def loop(
     *,
-    seconds: int = 0, minutes: int = 0, hours: int = 0, count: t.Any = None, reconnect: bool = True,
+    seconds: int = 0,
+    minutes: int = 0,
+    hours: int = 0,
+    count: t.Any = None,
+    reconnect: bool = True,
     loop: asyncio.Task = None
 ) -> t.Callable:
     def decorator(func: t.Callable) -> Loop:
         kwargs = {
-            'seconds': seconds,
-            'minutes': minutes,
-            'hours': hours,
-            'count': count,
-            'reconnect': reconnect,
-            'loop': loop
+            "seconds": seconds,
+            "minutes": minutes,
+            "hours": hours,
+            "count": count,
+            "reconnect": reconnect,
+            "loop": loop,
         }
         return Loop(func, **kwargs)
+
     return decorator
